@@ -12,15 +12,15 @@ public class ClockMain {
         ClockOutput out = emulator.getOutput();
 
         out.displayTime(15, 2, 37);   // arbitrary time: just an example
+        Monitor monitor = new Monitor(15, 57, 30);
+        TimeThread timeThread = new TimeThread(out, monitor);
+        timeThread.start();
+        
+        ConfigurationThread confThread = new ConfigurationThread(out, in, monitor);
+        confThread.start();
+        
+        AlarmThread alarmThread = new AlarmThread(out, monitor);
+        alarmThread.start();
 
-        while (true) {
-            UserInput userInput = in.getUserInput();
-            Choice c = userInput.choice();
-            int h = userInput.hours();
-            int m = userInput.minutes();
-            int s = userInput.seconds();
-
-            System.out.println("choice=" + c + " h=" + h + " m=" + m + " s=" + s);
-        }
     }
 }
