@@ -12,17 +12,21 @@ public class TimeThread extends Thread{
     
     @Override
     public void run() {
+    	long t1 = System.currentTimeMillis();
+    	int i = 1;
     	while (true) {
-    		long t1 = System.currentTimeMillis();
+    		//long t1 = System.currentTimeMillis();
 	    	try {
 				monitor.timeTick(output);
 	    		long t0 = System.currentTimeMillis();
-
-				TimeThread.sleep(1000 - (t0- t1)); // Code above takes some time, so we adjust for it
+	    		Thread.sleep(1000-(t0 -t1 - i*1000 ));
+	    		
+				//TimeThread.sleep(1000 - (t0- t1)); // Code above takes some time, so we adjust for it
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	    	i++;
     	}
     }
 }
