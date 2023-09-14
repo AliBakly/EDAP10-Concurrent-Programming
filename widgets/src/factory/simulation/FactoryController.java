@@ -13,12 +13,27 @@ public class FactoryController {
         
         Tool press = factory.getPressTool();
         Tool paint = factory.getPaintTool();
+        Monitor monitor = new Monitor();
+    	Thread thread1  = new Thread(() -> factorySim(conveyor, press, Widget.GREEN_BLOB, monitor));
+    	
+    	Thread thread2  = new Thread(() -> factorySim(conveyor, paint, Widget.BLUE_MARBLE, monitor));
+    	thread1.start();
+    	thread2.start();
 
-        while (true) {
-            press.waitFor(Widget.GREEN_BLOB);
-            conveyor.off();
-            press.performAction();
-            conveyor.on();
-        }
+    }
+    private static void factorySim(Conveyor conveyor, Tool tool, Widget widget, Monitor monitor) {
+    	while (true) {
+			tool.waitFor(widget);
+	        monitor.turnOff(conveyor);;
+	        tool.performAction();
+	        monitor.finishedAction();
+	        try {
+				monitor.turnOn(conveyor);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    
     }
 }
