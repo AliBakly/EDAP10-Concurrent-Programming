@@ -17,17 +17,25 @@ public class TrainSimulation {
         	thread.start();
         }
     }
+    
     private static void trainsim(TrainView view, Monitor monitor) {
     	Deque<Segment> queue = new ArrayDeque<Segment>();
         Route route = view.loadRoute();
-        for (int i = 0; i < 4; i++) {
+        
+        //Init
+        for (int i = 0; i < 7; i++) {
         	Segment seg = route.next();
         	queue.addLast(seg);
         	try {
     			monitor.enterSegment(seg);
     		} catch (InterruptedException e) {
     			// TODO Auto-generated catch block
-    			e.printStackTrace();
+    			//e.printStackTrace();
+    			while(queue.size()!=0) {
+    				Segment first = queue.pollLast();
+                    monitor.exitSegment(first);
+    			}
+    			return;
     		}
         }
 
@@ -35,45 +43,22 @@ public class TrainSimulation {
         	Segment last = route.next();
             try {
     			monitor.enterSegment(last);
+    			queue.addFirst(last);
     			last.enter();
-
+                Segment first = queue.pollLast();
+                monitor.exitSegment(first);
     		} catch (InterruptedException e) {
     			// TODO Auto-generated catch block
-    			e.printStackTrace();
+    			//e.printStackTrace();
+    			while(queue.size()!=0) {
+    				Segment first = queue.pollLast();
+                    monitor.exitSegment(first);
+    			}
+    			return;
     		}
-            queue.addFirst(last);
-            
-            Segment first = queue.pollLast();
-            monitor.exitSegment(first);
+
             
         }
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-/*
-Segment first = route.next();
-Segment second = route.next();
-Segment third = route.next();
-queue.addFirst(third);
-queue.addFirst(second);
-queue.addFirst(first);
-
-try {
-	monitor.enterSegment(first);
-	monitor.enterSegment(second);
-	monitor.enterSegment(third);
-} catch (InterruptedException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-*/
